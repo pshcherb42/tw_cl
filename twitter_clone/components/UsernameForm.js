@@ -1,7 +1,8 @@
 "use client"
 import { useEffect, useState } from "react";
-import useUserInfo from "@/hooks/useUserInfo";
-import { headers } from "next/headers";
+import useUserInfo from "../hooks/useUserInfo";
+import { useRouter } from "next/router";
+
 
 export default function UsernameForm() {
 
@@ -9,24 +10,26 @@ export default function UsernameForm() {
     
     const [username, setUsername] = useState("");
 
+    const router = useRouter();
+
     useEffect(() => {
-        if (status === "loading") {
-            return ;
-        }
-        if (username === "") {
-           const defaultUsername = userInfo?.email?.split("@")[0] ?? "";
-           setUsername(defaultUsername.replace(/[a-z]+/gi,"")); 
-        }
-    }, [status]);
+        if (status === "loading") return;
+        if (username !== "") return; // don't overwrite typed value
+        const defaultUsername = (userInfo?.email ?? "")
+        .split("@")[0]
+        .replace(/[^a-z0-9]/gi, "")
+        .toLowerCase();
+        if (defaultUsername) setUsername(defaultUsername);
+    }, [status, userInfo]);
     
-    function handleFormSubmit(e) {
+    async function handleFormSubmit(e) {
         e.preventDefault();
-        fetch("/api/users", {
-            method: "PUT",
-            headers: {"Content-type":"application/json"},
+        await fetch('/api/users', {
+            method: 'PUT',
+            headers: {'content-type': 'application/json'},
             body: JSON.stringify({username}),
         })
-        
+        router.reload();
     }
     if (status === 'loading') {
         return '';

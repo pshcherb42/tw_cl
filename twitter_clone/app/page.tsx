@@ -16,8 +16,9 @@ export default function Home() {
   if (!userInfo?.username) {
     return <UsernameFrom />;
   }
+
   return (
-    <div>test</div>
+    <div>Homepage logged in {userInfo.username}</div>
   )
 }
 
