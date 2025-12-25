@@ -1,0 +1,10 @@
+import mongoose, {model, models, Schema} from "mongoose";
+
+const PostSchema = new Schema({
+    // define owr schema for post
+    author: {type:mongoose.Types.ObjectId, ref: 'User'},
+    text: String,
+});
+
+const Post = models?.Post || model('Post', PostSchema);
+export default Post;
