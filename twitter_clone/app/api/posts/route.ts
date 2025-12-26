@@ -16,3 +16,9 @@ export async function POST(req:NextRequest) {
     });
     return NextResponse.json(post);
 }
+
+export async function GET(req: NextRequest) {
+    await initMongoose();
+
+    return NextResponse.json(await Post.find().exec());
+}
