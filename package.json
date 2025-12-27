@@ -2,7 +2,9 @@
   "dependencies": {
     "@auth/mongodb-adapter": "^3.11.1",
     "axios": "^1.13.2",
+    "javascript-time-ago": "^2.5.12",
     "mongodb": "^6.21.0",
-    "next-auth": "^4.24.13"
+    "next-auth": "^4.24.13",
+    "react-time-ago": "^7.3.5"
   }
 }
