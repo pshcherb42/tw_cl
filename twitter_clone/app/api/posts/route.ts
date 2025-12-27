@@ -19,9 +19,15 @@ export async function POST(req:NextRequest) {
 
 export async function GET(req: NextRequest) {
     await initMongoose();
-    const posts = await Post.find()
-    .populate('author') // to retrieve image and nickname for user
-    .sort({createdAt: -1}) // to sort in descending order
-    .exec();
-    return NextResponse.json(posts);
+    const id = req.nextUrl.searchParams.get('id');
+    if (id) {
+        const post = await Post.findById(id).populate('author');
+        return NextResponse.json(post);
+    } else {
+        const posts = await Post.find()
+        .populate('author') // to retrieve image and nickname for user
+        .sort({createdAt: -1}) // to sort in descending order
+        .exec();
+        return NextResponse.json(posts);
+    }
 }

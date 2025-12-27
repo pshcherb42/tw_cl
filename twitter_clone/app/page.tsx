@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import PostForm from "@/components/PostForm";
 import PostContent from "@/components/PostContent";
 import axios from "axios";
+import Layout from "@/components/Layout"
 export default function Home() {
 
   
@@ -31,7 +32,7 @@ export default function Home() {
   }
 
   return (
-    <div className="max-w-lg mx-auto border-l border-r border-twitter-border min-h-screen">
+    <Layout>
       <h1 className="text-lg font-bold p-4">Home</h1>
         <PostForm onPost={() => {fetchHomePosts();}}/> 
         <div className=""> 
@@ -41,7 +42,7 @@ export default function Home() {
             </div>
           ))}
         </div>
-    </div>
+    </Layout>
   )
 }
 
