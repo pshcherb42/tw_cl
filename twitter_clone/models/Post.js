@@ -4,7 +4,10 @@ const PostSchema = new Schema({
     // define owr schema for post
     author: {type:mongoose.Types.ObjectId, ref: 'User'},
     text: String,
-    likesCount: {type:Number, default:0}
+    likesCount: {type:Number, default:0},
+    commentsCount: {type:Number,default:0},
+    parent: {type:mongoose.Types.ObjectId, ref: 'Post'},
+
 }, {
     timestamps: true,
 });

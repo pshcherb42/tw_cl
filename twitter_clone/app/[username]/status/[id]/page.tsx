@@ -6,20 +6,34 @@ import axios from "axios";
 import PostContent from "@/components/PostContent";
 import Layout from "@/components/Layout";
 import Link from "next/link";
+import useUserInfo from "@/hooks/useUserInfo";
+import PostForm from "@/components/PostForm";
+import { NextResponse } from "next/server";
 
 export default function PostPage() {
     const params = useParams();
     const {id} = params;
     const [post,setPost] = useState();
+    const {userInfo} = useUserInfo();
+    const [replies,setReplies] = useState([]);
+    const [repliesLikedByMe,setRepliesLikedByMe] = useState([]);
 
-    useEffect(() => {
-      if (!id) {
-        return;
-      }
+    function fetchData() {
       axios.get('/api/posts?id='+id)
         .then(response => {
             setPost(response.data);
         });
+      axios.get('/api/posts?parent='+id)
+        .then(response => {
+          setReplies(response.data.posts);
+          setRepliesLikedByMe(response.data.idsLikedByMe);
+        })
+    }
+    useEffect(() => {
+      if (!id) {
+        return;
+      }
+      fetchData();
     }, [id]);
 
     return (
@@ -35,8 +49,24 @@ export default function PostPage() {
                     </div>
                   </Link>
                   <PostContent {...post} big />
+                  
                 </div>  
             )}
+            {!!userInfo && (
+              <div className="border-t border-twitter-border py-5">
+                <PostForm onPost={fetchData}
+                          parent={id} 
+                          compact placeholder="Tweet your reply"/>
+              </div>
+
+            )}
+            <div className="">
+              {replies.length > 0 && replies.map(reply => (
+                <div key={reply._id} className="p-5 border-t border-twitter-border">
+                  <PostContent {...reply} likedByMe={repliesLikedByMe.includes(reply._id)}/>
+                </div>
+              ))}
+            </div>
         </Layout>
     );
 }

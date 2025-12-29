@@ -3,7 +3,10 @@ import Avatar from "./Avatar";
 import Link from "next/link"
 import PostButtons from "@/components/PostButtons"
 
-export default function PostContent({text,author,createdAt,likesCount,likedByMe,_id,big = false}) {
+export default function PostContent({
+  text,author,
+  createdAt,likesCount,commentsCount,
+  likedByMe,_id,big = false}) {
     return (
         <div>
           <div className="flex w-full"> 
@@ -24,9 +27,9 @@ export default function PostContent({text,author,createdAt,likesCount,likedByMe,
               {!big && (
                 <div>
                   <Link href={`/${author.username}/status/${_id}`}>
-                    {text}
+                    <div className="w-full cursor-pointer">{text}</div>
                   </Link>
-                  <PostButtons id={_id} likesCount={likesCount} likedByMe={likedByMe}/>
+                  <PostButtons id={_id} likesCount={likesCount} likedByMe={likedByMe} commentsCount={commentsCount}/>
                 </div>
               )}
             </div>
@@ -47,7 +50,7 @@ export default function PostContent({text,author,createdAt,likesCount,likedByMe,
                     .join(' ')}
                 </div>
               )}
-              <PostButtons id={_id} likesCount={likesCount} likedByMe={likedByMe}/>
+              <PostButtons id={_id} likesCount={likesCount} likedByMe={likedByMe} commentsCount={commentsCount}/>
             </div>
           )}
         </div>  

@@ -11,11 +11,17 @@ export async function POST(req:NextRequest) {
     const session = await getServerSession(authOptions); // session info to get user id
     // now we create a model for post 
 
-    const {text} = await req.json();
+    const {text,parent} = await req.json();
     const post = await Post.create({
         author:session.user.id,
         text,
+        parent,
     });
+    if (parent) {
+        const parentPost = await Post.findById(parent);
+        parentPost.commentsCount = await Post.countDocuments({parent});
+        await parentPost.save();
+    }
     return NextResponse.json(post);
 }
 
@@ -27,7 +33,8 @@ export async function GET(req: NextRequest) {
         const post = await Post.findById(id).populate('author');
         return NextResponse.json(post);
     } else {
-        const posts = await Post.find()
+        const parent = req.nextUrl.searchParams.get("parent") || null;
+        const posts = await Post.find({parent})
         .populate('author') // to retrieve image and nickname for user
         .sort({createdAt: -1}) // to sort in descending order
         .limit(20)
