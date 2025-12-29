@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react";
 import useUserInfo from "../hooks/useUserInfo";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 
 export default function UsernameForm() {
@@ -29,7 +29,7 @@ export default function UsernameForm() {
             headers: {'content-type': 'application/json'},
             body: JSON.stringify({username}),
         })
-        router.reload();
+        router.refresh();
     }
     if (status === 'loading') {
         return '';

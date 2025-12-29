@@ -22,8 +22,7 @@ export default function Login() {
     console.log("Status:", status);
 
     const handleSignIn = (providerId: string) => {
-        console.log("Signing in with:", providerId);  // Debug log
-        signIn(providerId, { callbackUrl: "/" });
+      signIn(providerId, { callbackUrl: "/", prompt: "select_account" });
     };
 
     return (

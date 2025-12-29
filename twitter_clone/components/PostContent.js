@@ -3,7 +3,7 @@ import Avatar from "./Avatar";
 import Link from "next/link"
 import PostButtons from "@/components/PostButtons"
 
-export default function PostContent({text,author,createdAt,_id,big}) {
+export default function PostContent({text,author,createdAt,likesCount,likedByMe,_id,big = false}) {
     return (
         <div>
           <div className="flex w-full"> 
@@ -26,7 +26,7 @@ export default function PostContent({text,author,createdAt,_id,big}) {
                   <Link href={`/${author.username}/status/${_id}`}>
                     {text}
                   </Link>
-                  <PostButtons />
+                  <PostButtons id={_id} likesCount={likesCount} likedByMe={likedByMe}/>
                 </div>
               )}
             </div>
@@ -47,7 +47,7 @@ export default function PostContent({text,author,createdAt,_id,big}) {
                     .join(' ')}
                 </div>
               )}
-              <PostButtons />
+              <PostButtons id={_id} likesCount={likesCount} likedByMe={likedByMe}/>
             </div>
           )}
         </div>  
@@ -62,3 +62,4 @@ export default function PostContent({text,author,createdAt,_id,big}) {
 // we use <link> to redirect from main page to specific twitter page on click(use backticks instead of quotes for href)
 // app/[username]/status/[id] to acces twitter page
 // big for different kind of display
+// we pass id for postbuttons to use for counting likes

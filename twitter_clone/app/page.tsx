@@ -1,34 +1,56 @@
 "use client"
 import useUserInfo from "@/hooks/useUserInfo";
 import UsernameFrom from "@/components/UsernameForm";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import PostForm from "@/components/PostForm";
 import PostContent from "@/components/PostContent";
 import axios from "axios";
 import Layout from "@/components/Layout"
+import { useRouter } from "next/navigation";
 export default function Home() {
 
-  
-  const {userInfo, status:userInfoStatus} = useUserInfo();
+  const {data:session} = useSession();
+  const {userInfo,setUserInfo, status:userInfoStatus} = useUserInfo();
   const [posts,setPosts] = useState<any>([]);
+  const [idsLikedByMe,setIdsLikedByMe] = useState([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (userInfoStatus === 'unauthenticated' || (userInfoStatus === 'authenticated' && userInfo === null)) {
+      router.push('/login');
+    }
+}, [userInfo, userInfoStatus, router]);
   
   function fetchHomePosts() {
     axios.get('/api/posts').then(response => {
-      setPosts(response.data);
+      setPosts(response.data.posts);
+      setIdsLikedByMe(response.data.idsLikedByMe);
     });
   }
 
+  async function logout() {
+    setUserInfo(null);
+    await signOut({ callbackUrl: '/login' }); // ✅ Properly sign out
+  }
+
   useEffect(() => {
-    fetchHomePosts();
-  }, []);
+    if (userInfo) {
+      fetchHomePosts();
+    }
+    
+  }, [userInfo]);
 
   if (userInfoStatus === 1) {
     return 'loading user info';
   }
 
-  if (!userInfo?.username) {
+  if (userInfo && !userInfo?.username) {
     return <UsernameFrom />;
+  }
+
+  if (!userInfo) {
+    return 'no user info';
   }
 
   return (
@@ -37,11 +59,18 @@ export default function Home() {
         <PostForm onPost={() => {fetchHomePosts();}}/> 
         <div className=""> 
           {posts.length > 0 && posts.map(post => ( 
-            <div className="border-t border-twitter-border p-5">
-              <PostContent {...post}/> 
+            <div key={post._id} className="border-t border-twitter-border p-5">
+              <PostContent {...post} likedByMe={idsLikedByMe.includes(post._id)}/> 
             </div>
           ))}
         </div>
+        {userInfo && (
+          <div className="p-5 text-center border-t border-twitter-border">
+            <button onClick={logout} className="bg-twitter-white text-black px-5 py-2 rounded-full">
+              Logout
+            </button>
+          </div>
+        )}
     </Layout>
   )
 }
