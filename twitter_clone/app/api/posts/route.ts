@@ -34,7 +34,9 @@ export async function GET(req: NextRequest) {
         return NextResponse.json(post);
     } else {
         const parent = req.nextUrl.searchParams.get("parent") || null;
-        const posts = await Post.find({parent})
+        const author = req.nextUrl.searchParams.get("author");
+        const searchFilter = author ? {author} : {parent};
+        const posts = await Post.find(searchFilter)
         .populate('author') // to retrieve image and nickname for user
         .sort({createdAt: -1}) // to sort in descending order
         .limit(20)

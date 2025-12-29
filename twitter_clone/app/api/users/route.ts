@@ -9,7 +9,14 @@ export async function GET(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
-    const user = await User.findById(id);
+    const username = searchParams.get("username");
+
+    let user = null;
+    if (id) {
+    user = await User.findById(id);
+    } else if (username) {
+    user = await User.findOne({ username });
+    }
 
     return NextResponse.json({user});
 }

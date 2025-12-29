@@ -11,13 +11,23 @@ export default function PostContent({
         <div>
           <div className="flex w-full"> 
             <div>
-              <Avatar src={author.image} />
+             {!!author?.image && (
+              <Link href={`/`+author?.username}>
+                <div className="cursor-pointer">
+                  <Avatar src={author.image} />
+                </div>
+              </Link>
+             )}
             </div>
             <div className="pl-2 grow">
               <div>
-                <span className="font-bold pr-1">{author.name}</span>
+                <Link href={`/`+author?.username}>
+                  <span className="font-bold pr-1 cursor-pointer">{author.name}</span>
+                </Link>
                 {big && (<br />)}
-                <span className=" text-twitter-light-grey">@{author.username}</span>
+                <Link href={`/`+author?.username}>
+                  <span className=" text-twitter-light-grey cursor-pointer">@{author.username}</span>
+                </Link>
                 {createdAt && !big && (
                   <span className="pl-1 text-twitter-light-grey">
                     <ReactTimeAgo date={createdAt} timeStyle={'twitter'}/>
@@ -29,7 +39,7 @@ export default function PostContent({
                   <Link href={`/${author.username}/status/${_id}`}>
                     <div className="w-full cursor-pointer">{text}</div>
                   </Link>
-                  <PostButtons id={_id} likesCount={likesCount} likedByMe={likedByMe} commentsCount={commentsCount}/>
+                  <PostButtons username={author.username} id={_id} likesCount={likesCount} likedByMe={likedByMe} commentsCount={commentsCount}/>
                 </div>
               )}
             </div>
@@ -50,7 +60,7 @@ export default function PostContent({
                     .join(' ')}
                 </div>
               )}
-              <PostButtons id={_id} likesCount={likesCount} likedByMe={likedByMe} commentsCount={commentsCount}/>
+              <PostButtons username={author.username} id={_id} likesCount={likesCount} likedByMe={likedByMe} commentsCount={commentsCount}/>
             </div>
           )}
         </div>  
