@@ -14,10 +14,12 @@ export default function UserPage() {
   const params = useParams();  
   const username = params.username;
   const [profileInfo,setProfileInfo] = useState();
+  const [originalUserInfo,setOriginalUserInfo] = useState();
   const {userInfo} = useUserInfo();
   const [posts,setPosts] = useState([]);
   const [postsLikedByMe,setPostsLikedByMe] = useState([]);
   const [editMode,setEditMode] = useState(false);
+  const [isFollowing,setIsFollowing] = useState(false);
 
 useEffect(() => {
   if (!username) {
@@ -26,6 +28,7 @@ useEffect(() => {
   axios.get('/api/users?username='+username)
     .then(response => {
       setProfileInfo(response.data.user);
+      setOriginalUserInfo(response.data.user);
     })
 },[username]);
 
@@ -44,9 +47,30 @@ function updateUserImage(type, src) {
   setProfileInfo(prev => ({ ...prev, [type]: src }));
 }
 
-async function updateProfile() 
+async function updateProfile() {
+  const {bio,name,username} = profileInfo;
+  await axios.put('/api/profile', {
+    bio,name,username
+  })
+  setEditMode(false);
+}
 
 const isMyProfile = profileInfo?._id === userInfo?._id;
+
+function cancel() {
+  setProfileInfo(prev => {
+    const {bio,name,username} = originalUserInfo;
+    return {...prev,bio,name,username};
+  });
+  setEditMode(false);
+}
+
+function toggleFollow() {
+  setIsFollowing(prev => !prev);
+  axios.post('/api/followers',{
+    destination: profileInfo?._id;
+  })
+}
 
   return (
       <Layout>
@@ -56,18 +80,25 @@ const isMyProfile = profileInfo?._id === userInfo?._id;
                 <TopNavLink title={profileInfo.name} />
             </div>
             <Cover src={profileInfo.cover}
-                   editable={true}
+                   editable={isMyProfile}
                    onChange={src => updateUserImage('cover',src)}/>
             <div className="flex justify-between">
               <div className="ml-5 relative">
                 <div className="absolute -top-12 border-4 rounded-full border-black overflow-hidden">
-                  <Avatar big src={profileInfo.image} editable={true} onChange={src => updateUserImage('image', src)}/>
+                  <Avatar big src={profileInfo.image} 
+                              editable={isMyProfile} 
+                              onChange={src => updateUserImage('image', src)}
+                  />
                 </div>
                  
               </div>
               <div className="p-2">
                 {!isMyProfile && (
-                  <button className="bg-twitter-blue text-white py-2 px-5 rounded-full">Follow</button>
+                  <button onClick={toggleFollow} 
+                          className={(isFollowing ? 'bg-twitter-white text-black' : 'bg-twitter-blue text-white')+" py-2 px-5 rounded-full"}
+                  >
+                    {isFollowing ? 'Following' : 'Follow'}
+                  </button>
                 )}
                 {isMyProfile && (
                   <div>
@@ -77,13 +108,13 @@ const isMyProfile = profileInfo?._id === userInfo?._id;
                     )}
                     {editMode && (
                       <div>
-                        <button onClick={() => setEditMode(false)} 
+                        <button onClick={() => cancel()}
                               className="bg-twitter-white text-black py-2 px-5 rounded-full mr-2"
                         >
                                 Cancel
                         </button>
 
-                        <button onClick={() => setEditMode(false)} 
+                        <button onClick={() => updateProfile()} 
                               className="bg-twitter-blue text-white py-2 px-5 rounded-full"
                         >
                                 Save profile
@@ -100,7 +131,17 @@ const isMyProfile = profileInfo?._id === userInfo?._id;
               )}
               {editMode && (
                 <div className="mb-2">
-                  <input type="text" value={profileInfo.name} className="bg-twitter-border p-2 rounded-full"/>
+                  <input 
+                         type="text" 
+                         value={profileInfo.name} 
+                         className="bg-twitter-border p-2 rounded-full"
+                         onChange={ev => 
+                          setProfileInfo(prev => ({
+                            ...prev,
+                            name:ev.target.value
+                          }))
+                        }
+                  />
                 </div>
               )}
               {!editMode && (
@@ -108,7 +149,17 @@ const isMyProfile = profileInfo?._id === userInfo?._id;
               )} 
               {editMode && (
                 <div className="mb-2">
-                  <input type="text" value={profileInfo.username} className="bg-twitter-border p-2 rounded-full"/>
+                  <input 
+                        type="text" 
+                        value={profileInfo.username} 
+                        className="bg-twitter-border p-2 rounded-full"
+                        onChange={ev => 
+                          setProfileInfo(prev => ({
+                            ...prev,
+                            username:ev.target.value
+                          }))
+                        }
+                  />
                 </div>
               )}
               {!editMode && (
@@ -120,6 +171,12 @@ const isMyProfile = profileInfo?._id === userInfo?._id;
                 <div className="bg-twitter-border p-2 rounded-2xl mb-2">
                   <textarea value={profileInfo.bio}
                             className="w-full block" 
+                            onChange={ev => 
+                            setProfileInfo(prev => ({
+                              ...prev,
+                              bio:ev.target.value
+                            }))
+                          }
                   />
                 </div>
               )}

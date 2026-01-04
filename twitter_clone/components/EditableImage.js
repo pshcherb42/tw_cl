@@ -53,11 +53,9 @@ export default function EditableImage({type,src,onChange,className,editable=fals
                 <PulseLoader size={14} color="#fff"/>
               </div>
           )} 
-          {src && (
-              <div className={"flex items-center overflow-hidden "+className}>
-                <img src={src} className={className + " w-full h-full object-cover"} alt=""/>
-              </div>
-          )} 
+          <div className={"flex items-center bg-twitter-border overflow-hidden "+className}>
+            {src && (<img src={src} className={className + " w-full h-full object-cover"} alt=""/>)}
+          </div>
         </div>
     </FileDrop>
     );
