@@ -1,7 +1,9 @@
-export default function Cover() {
+import EditableImage from "./EditableImage"
+
+export default function Cover({src, onChange, editable}) {
     return (
-        <div className="h-36 bg-twitter-border">
-            
-        </div>
+        <EditableImage type={'cover'} src={src} onChange={onChange} editable={editable} className={'h-36'}/>
     );
 }
+
+// find react component for droppping files

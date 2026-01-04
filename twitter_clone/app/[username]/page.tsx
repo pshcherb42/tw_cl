@@ -7,13 +7,17 @@ import { useEffect, useState } from "react";
 import Cover from "@/components/Cover"
 import Avatar from "@/components/Avatar";
 import PostContent from "@/components/PostContent";
+import { userInfo } from "os";
+import useUserInfo from "@/hooks/useUserInfo";
 
 export default function UserPage() {
   const params = useParams();  
   const username = params.username;
   const [profileInfo,setProfileInfo] = useState();
+  const {userInfo} = useUserInfo();
   const [posts,setPosts] = useState([]);
   const [postsLikedByMe,setPostsLikedByMe] = useState([]);
+  const [editMode,setEditMode] = useState(false);
 
 useEffect(() => {
   if (!username) {
@@ -36,6 +40,14 @@ useEffect(() => {
     })
 }, [profileInfo])
 
+function updateUserImage(type, src) {
+  setProfileInfo(prev => ({ ...prev, [type]: src }));
+}
+
+async function updateProfile() 
+
+const isMyProfile = profileInfo?._id === userInfo?._id;
+
   return (
       <Layout>
         {!!profileInfo && (
@@ -43,24 +55,74 @@ useEffect(() => {
             <div className="px-5 pt-2">
                 <TopNavLink title={profileInfo.name} />
             </div>
-            <Cover />
+            <Cover src={profileInfo.cover}
+                   editable={true}
+                   onChange={src => updateUserImage('cover',src)}/>
             <div className="flex justify-between">
               <div className="ml-5 relative">
-                <div className="absolute -top-12 border-4 rounded-full border-black">
-                  <Avatar big src={profileInfo.image}/>
+                <div className="absolute -top-12 border-4 rounded-full border-black overflow-hidden">
+                  <Avatar big src={profileInfo.image} editable={true} onChange={src => updateUserImage('image', src)}/>
                 </div>
                  
               </div>
               <div className="p-2">
-                <button className="bg-twitter-blue text-white py-2 px-5 rounded-full">Follow</button>
+                {!isMyProfile && (
+                  <button className="bg-twitter-blue text-white py-2 px-5 rounded-full">Follow</button>
+                )}
+                {isMyProfile && (
+                  <div>
+                    {!editMode && (
+                      <button onClick={() => setEditMode(true)} 
+                            className="bg-twitter-blue text-white py-2 px-5 rounded-full">Edit profile</button>
+                    )}
+                    {editMode && (
+                      <div>
+                        <button onClick={() => setEditMode(false)} 
+                              className="bg-twitter-white text-black py-2 px-5 rounded-full mr-2"
+                        >
+                                Cancel
+                        </button>
+
+                        <button onClick={() => setEditMode(false)} 
+                              className="bg-twitter-blue text-white py-2 px-5 rounded-full"
+                        >
+                                Save profile
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
             <div className="px-5 pt-2">
-              <h1 className="fontbold text-xl leading-5">{profileInfo.name}</h1>
-              <h2 className="text-twitter-light-grey text-sm">@{profileInfo.username}</h2>
-              <div className="text-sm mt-2 mb-2">
-                mars an dcars
-              </div>
+              {!editMode && (
+                <h1 className="fontbold text-xl leading-5">{profileInfo.name}</h1>
+              )}
+              {editMode && (
+                <div className="mb-2">
+                  <input type="text" value={profileInfo.name} className="bg-twitter-border p-2 rounded-full"/>
+                </div>
+              )}
+              {!editMode && (
+                <h2 className="text-twitter-light-grey text-sm">@{profileInfo.username}</h2>
+              )} 
+              {editMode && (
+                <div className="mb-2">
+                  <input type="text" value={profileInfo.username} className="bg-twitter-border p-2 rounded-full"/>
+                </div>
+              )}
+              {!editMode && (
+                <div className="text-sm mt-2 mb-2">
+                  {profileInfo.bio}
+                </div>
+              )}
+              {editMode && (
+                <div className="bg-twitter-border p-2 rounded-2xl mb-2">
+                  <textarea value={profileInfo.bio}
+                            className="w-full block" 
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}
