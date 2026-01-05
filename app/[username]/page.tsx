@@ -16,8 +16,8 @@ export default function UserPage() {
   const [profileInfo,setProfileInfo] = useState<any>(null);
   const [originalUserInfo,setOriginalUserInfo] = useState();
   const {userInfo} = useUserInfo();
-  const [posts,setPosts] = useState([]);
-  const [postsLikedByMe,setPostsLikedByMe] = useState([]);
+  const [posts,setPosts] = useState<any[]>([]);
+  const [postsLikedByMe,setPostsLikedByMe] = useState<any[]>([]);
   const [editMode,setEditMode] = useState(false);
   const [isFollowing,setIsFollowing] = useState(false);
 
@@ -34,7 +34,7 @@ useEffect(() => {
 },[username]);
 
 useEffect(() => {
-  if(!profileInfo?._id) {
+  if(!(profileInfo as any)?._id) {
     return;
   } 
   axios.get('/api/posts?author='+profileInfo._id)
@@ -44,8 +44,8 @@ useEffect(() => {
     })
 }, [profileInfo])
 
-function updateUserImage(type, src) {
-  setProfileInfo(prev => ({ ...prev, [type]: src }));
+function updateUserImage(type:string, src:string) {
+  setProfileInfo((prev:any) => ({ ...prev, [type]: src }));
 }
 
 async function updateProfile() {
@@ -56,11 +56,11 @@ async function updateProfile() {
   setEditMode(false);
 }
 
-const isMyProfile = profileInfo?._id === userInfo?._id;
+const isMyProfile = profileInfo?._id === (userInfo as any)?._id;
 
 function cancel() {
-  setProfileInfo(prev => {
-    const {bio,name,username} = originalUserInfo;
+  setProfileInfo((prev:any) => {
+    const {bio,name,username} = originalUserInfo as any;
     return {...prev,bio,name,username};
   });
   setEditMode(false);
@@ -82,13 +82,13 @@ function toggleFollow() {
             </div>
             <Cover src={profileInfo.cover}
                    editable={isMyProfile}
-                   onChange={src => updateUserImage('cover',src)}/>
+                   onChange={(src:any) => updateUserImage('cover',src)}/>
             <div className="flex justify-between">
               <div className="ml-5 relative">
                 <div className="absolute -top-12 border-4 rounded-full border-black overflow-hidden">
                   <Avatar big src={profileInfo.image} 
                               editable={isMyProfile} 
-                              onChange={src => updateUserImage('image', src)}
+                              onChange={(src:any) => updateUserImage('image', src)}
                   />
                 </div>
                  
@@ -137,7 +137,7 @@ function toggleFollow() {
                          value={profileInfo.name} 
                          className="bg-twitter-border p-2 rounded-full"
                          onChange={ev => 
-                          setProfileInfo(prev => ({
+                          setProfileInfo((prev:any) => ({
                             ...prev,
                             name:ev.target.value
                           }))
@@ -155,7 +155,7 @@ function toggleFollow() {
                         value={profileInfo.username} 
                         className="bg-twitter-border p-2 rounded-full"
                         onChange={ev => 
-                          setProfileInfo(prev => ({
+                          setProfileInfo((prev:any) => ({
                             ...prev,
                             username:ev.target.value
                           }))
@@ -173,7 +173,7 @@ function toggleFollow() {
                   <textarea value={profileInfo.bio}
                             className="w-full block" 
                             onChange={ev => 
-                            setProfileInfo(prev => ({
+                            setProfileInfo((prev:any) => ({
                               ...prev,
                               bio:ev.target.value
                             }))
@@ -184,7 +184,7 @@ function toggleFollow() {
             </div>
           </div>
         )}
-        {posts?.length > 0 && posts.map(post => (
+        {posts?.length > 0 && posts.map((post: any) => (
           <div className="p-5 border-t border-twitter-border" key={post._id}>
             <PostContent {...post} likedByMe={postsLikedByMe.includes(post._id)} />
           </div>
