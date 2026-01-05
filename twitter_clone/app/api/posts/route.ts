@@ -35,6 +35,7 @@ export async function GET(req: NextRequest) {
         .populate('author')
         .populate({
            path: 'parent', 
+           populate: 'author',
         });
         return NextResponse.json(post);
     } else {
@@ -54,6 +55,10 @@ export async function GET(req: NextRequest) {
         }
         const posts = await Post.find(searchFilter)
         .populate('author') // to retrieve image and nickname for user
+        .populate({
+            path: 'parent',
+            populate: 'author',
+        })
         .sort({createdAt: -1}) // to sort in descending order
         .limit(20)
         .exec();

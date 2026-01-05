@@ -43,8 +43,12 @@ export default function PostPage() {
                 <div className="px-5 py-2">
                   <TopNavLink/>
                   {post.parent && (
-                    <div>
-                      parent
+                    <div className="pb-1">
+                      <PostContent {...post.parent}/>
+                      <div className=" ml-5 h-16 relative">
+                         <div className="h-21 border-l-2 border-twitter-border absolute -top-5" 
+                              style={{marginLeft:'2px'}}></div>
+                      </div>
                     </div>
                   )}
                   <PostContent {...post} big />

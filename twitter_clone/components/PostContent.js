@@ -22,11 +22,11 @@ export default function PostContent({
             <div className="pl-2 grow">
               <div>
                 <Link href={`/`+author?.username}>
-                  <span className="font-bold pr-1 cursor-pointer">{author.name}</span>
+                  <span className="font-bold pr-1 cursor-pointer">{author?.name}</span>
                 </Link>
                 {big && (<br />)}
                 <Link href={`/`+author?.username}>
-                  <span className=" text-twitter-light-grey cursor-pointer">@{author.username}</span>
+                  <span className=" text-twitter-light-grey cursor-pointer">@{author?.username}</span>
                 </Link>
                 {createdAt && !big && (
                   <span className="pl-1 text-twitter-light-grey">
@@ -36,17 +36,17 @@ export default function PostContent({
               </div>
               {!big && (
                 <div>
-                  <Link href={`/${author.username}/status/${_id}`}>
+                  <Link href={`/${author?.username}/status/${_id}`}>
                     <div className="w-full cursor-pointer">{text}</div>
                   </Link>
-                  <PostButtons username={author.username} id={_id} likesCount={likesCount} likedByMe={likedByMe} commentsCount={commentsCount}/>
+                  <PostButtons username={author?.username} id={_id} likesCount={likesCount} likedByMe={likedByMe} commentsCount={commentsCount}/>
                 </div>
               )}
             </div>
           </div>
           {big && (
             <div className="mt-2">
-              <Link href={`/${author.username}/status/${_id}`}>
+              <Link href={`/${author?.username}/status/${_id}`}>
                 {text}
               </Link>
               {createdAt && (
@@ -60,7 +60,7 @@ export default function PostContent({
                     .join(' ')}
                 </div>
               )}
-              <PostButtons username={author.username} id={_id} likesCount={likesCount} likedByMe={likedByMe} commentsCount={commentsCount}/>
+              <PostButtons username={author?.username} id={_id} likesCount={likesCount} likedByMe={likedByMe} commentsCount={commentsCount}/>
             </div>
           )}
         </div>  
