@@ -13,7 +13,7 @@ import useUserInfo from "@/hooks/useUserInfo";
 export default function UserPage() {
   const params = useParams();  
   const username = params.username;
-  const [profileInfo,setProfileInfo] = useState();
+  const [profileInfo,setProfileInfo] = useState<any>(null);
   const [originalUserInfo,setOriginalUserInfo] = useState();
   const {userInfo} = useUserInfo();
   const [posts,setPosts] = useState([]);
