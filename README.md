@@ -9,6 +9,8 @@ A full-stack Twitter-like social network built with Next.js.
 - Like posts
 - Home feed
 - Protected routes
+- Tweet images
+- Drag and drop for profile pic and cover
 
 ## Tech Stack
 - Next.js (App Router)
