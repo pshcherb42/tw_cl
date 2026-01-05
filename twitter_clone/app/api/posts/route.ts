@@ -12,11 +12,12 @@ export async function POST(req:NextRequest) {
     const session = await getServerSession(authOptions); // session info to get user id
     // now we create a model for post 
 
-    const {text,parent} = await req.json();
+    const {text,parent,images} = await req.json();
     const post = await Post.create({
         author:session.user.id,
         text,
         parent,
+        images,
     });
     if (parent) {
         const parentPost = await Post.findById(parent);

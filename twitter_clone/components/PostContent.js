@@ -4,9 +4,26 @@ import Link from "next/link"
 import PostButtons from "@/components/PostButtons"
 
 export default function PostContent({
-  text,author,
-  createdAt,likesCount,commentsCount,
-  likedByMe,_id,big = false}) {
+    text,author,
+    createdAt,likesCount,commentsCount,
+    images,
+    likedByMe,_id,big = false}) {
+  
+    function showImages() {
+      if (!images?.length) {
+        return '';
+      }
+      return (
+        <div className="flex -mx-1">
+          {images?.length > 0 && images.map((img,idx) => (
+            <div className="m-1" key={img + idx}>
+              <img src={img} alt="" />
+            </div>
+          ))}
+        </div>
+      );
+    }
+
     return (
         <div>
           <div className="flex w-full"> 
@@ -37,7 +54,10 @@ export default function PostContent({
               {!big && (
                 <div>
                   <Link href={`/${author?.username}/status/${_id}`}>
-                    <div className="w-full cursor-pointer">{text}</div>
+                    <div className="w-full cursor-pointer">
+                      {text}
+                      {showImages()}
+                    </div>
                   </Link>
                   <PostButtons username={author?.username} id={_id} likesCount={likesCount} likedByMe={likedByMe} commentsCount={commentsCount}/>
                 </div>
@@ -47,7 +67,10 @@ export default function PostContent({
           {big && (
             <div className="mt-2">
               <Link href={`/${author?.username}/status/${_id}`}>
-                {text}
+                <div>
+                  {text}
+                  {showImages()}
+                </div>
               </Link>
               {createdAt && (
                 <div className="text-twitter-light-grey text-sm">
