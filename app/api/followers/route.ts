@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { initMongoose } from "@/lib/mongoose";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
@@ -6,7 +6,7 @@ import Follower from "@/models/Follower";
 
 export const runtime = "nodejs";
 
-export async function POST(req) {
+export async function POST(req:NextRequest) {
   await initMongoose();
   const session = await getServerSession(authOptions);
 
