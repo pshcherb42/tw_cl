@@ -14,10 +14,10 @@ import TopNavLink from "@/components/TopNavigatioLink"
 export default function PostPage() {
     const params = useParams();
     const {id} = params;
-    const [post,setPost] = useState();
+    const [post,setPost] = useState<any>();
     const {userInfo} = useUserInfo();
-    const [replies,setReplies] = useState([]);
-    const [repliesLikedByMe,setRepliesLikedByMe] = useState([]);
+    const [replies,setReplies] = useState<any[]>([]);
+    const [repliesLikedByMe,setRepliesLikedByMe] = useState<any[]>([]);
 
     function fetchData() {
       axios.get('/api/posts?id='+id)
