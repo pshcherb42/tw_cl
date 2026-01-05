@@ -16,6 +16,18 @@ export default function Home() {
   const [idsLikedByMe,setIdsLikedByMe] = useState<any[]>([]);
   const router = useRouter();
   
+
+  useEffect(() => {
+    if ((userInfoStatus as any) !== 'loading' && !userInfo) {
+      router.push('/login');
+    }
+  }, [userInfo, userInfoStatus, router]);
+
+
+  useEffect(() => {
+      fetchHomePosts();
+  }, []);
+
   function fetchHomePosts() {
     axios.get('/api/posts').then(response => {
       setPosts(response.data.posts);
@@ -28,9 +40,6 @@ export default function Home() {
     await signOut(); // ✅ Properly sign out
   }
 
-  useEffect(() => {
-      fetchHomePosts();
-  }, []);
 
   if ((userInfoStatus as any) === 'loading') {
     return 'loading user info';
@@ -40,11 +49,6 @@ export default function Home() {
     return <UsernameFrom />;
   }
 
-  useEffect(() => {
-  if ((userInfoStatus as any) !== 'loading' && !userInfo) {
-    router.push('/login');
-  }
-}, [userInfo, userInfoStatus, router]);
 
   return (
     <Layout>

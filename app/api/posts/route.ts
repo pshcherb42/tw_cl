@@ -2,6 +2,7 @@ import { initMongoose } from "@/lib/mongoose";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
 import Post from "@/models/Post"
+import "@/models/User"
 import { NextRequest, NextResponse } from "next/server";
 import Like from "@/models/Like";
 import { Session } from "inspector/promises";
