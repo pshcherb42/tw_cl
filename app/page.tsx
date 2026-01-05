@@ -15,12 +15,6 @@ export default function Home() {
   const [posts,setPosts] = useState<any[]>([]);
   const [idsLikedByMe,setIdsLikedByMe] = useState<any[]>([]);
   const router = useRouter();
-
-  useEffect(() => {
-    if ((userInfoStatus as any) === 'unauthenticated' || ((userInfoStatus as any) === 'authenticated' && userInfo === null)) {
-      router.push('/login');
-    }
-}, [userInfo, userInfoStatus, router]);
   
   function fetchHomePosts() {
     axios.get('/api/posts').then(response => {
@@ -31,15 +25,12 @@ export default function Home() {
 
   async function logout() {
     setUserInfo(null);
-    await signOut({ callbackUrl: '/login' }); // ✅ Properly sign out
+    await signOut(); // ✅ Properly sign out
   }
 
   useEffect(() => {
-    if (userInfo) {
       fetchHomePosts();
-    }
-    
-  }, [userInfo]);
+  }, []);
 
   if ((userInfoStatus as any) === 'loading') {
     return 'loading user info';
@@ -50,6 +41,8 @@ export default function Home() {
   }
 
   if (!userInfo) {
+    console.log({session});
+    router.push('/login');
     return 'no user info';
   }
 
