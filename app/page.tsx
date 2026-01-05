@@ -12,12 +12,12 @@ export default function Home() {
 
   const {data:session} = useSession();
   const {userInfo,setUserInfo, status:userInfoStatus} = useUserInfo();
-  const [posts,setPosts] = useState<any>([]);
-  const [idsLikedByMe,setIdsLikedByMe] = useState([]);
+  const [posts,setPosts] = useState<any[]>([]);
+  const [idsLikedByMe,setIdsLikedByMe] = useState<any[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    if (userInfoStatus === 'unauthenticated' || (userInfoStatus === 'authenticated' && userInfo === null)) {
+    if ((userInfoStatus as any) === 'unauthenticated' || ((userInfoStatus as any) === 'authenticated' && userInfo === null)) {
       router.push('/login');
     }
 }, [userInfo, userInfoStatus, router]);
@@ -41,11 +41,11 @@ export default function Home() {
     
   }, [userInfo]);
 
-  if (userInfoStatus === 1) {
+  if ((userInfoStatus as any) === 'loading') {
     return 'loading user info';
   }
 
-  if (userInfo && !userInfo?.username) {
+  if (userInfo && !(userInfo as any)?.username) {
     return <UsernameFrom />;
   }
 
@@ -56,9 +56,9 @@ export default function Home() {
   return (
     <Layout>
       <h1 className="text-lg font-bold p-4">Home</h1>
-        <PostForm onPost={() => {fetchHomePosts();}}/> 
+        <PostForm onPost={() => fetchHomePosts()} compact={false} parent={null} />
         <div className=""> 
-          {posts.length > 0 && posts.map(post => ( 
+          {posts.length > 0 && posts.map((post:any) => ( 
             <div key={post._id} className="border-t border-twitter-border p-5">
               {post.parent && (
                 <div>
