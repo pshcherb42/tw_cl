@@ -29,6 +29,7 @@ useEffect(() => {
     .then(response => {
       setProfileInfo(response.data.user);
       setOriginalUserInfo(response.data.user);
+      setIsFollowing(!!response.data.follow);
     })
 },[username]);
 
@@ -68,7 +69,7 @@ function cancel() {
 function toggleFollow() {
   setIsFollowing(prev => !prev);
   axios.post('/api/followers',{
-    destination: profileInfo?._id;
+    destination: profileInfo?._id,
   })
 }
 

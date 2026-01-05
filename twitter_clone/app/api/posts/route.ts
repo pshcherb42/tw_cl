@@ -5,6 +5,7 @@ import Post from "@/models/Post"
 import { NextRequest, NextResponse } from "next/server";
 import Like from "@/models/Like";
 import { Session } from "inspector/promises";
+import Follower from "@/models/Follower";
 
 export async function POST(req:NextRequest) {
     await initMongoose(); // to have connection to our database
@@ -30,12 +31,27 @@ export async function GET(req: NextRequest) {
     const session = await getServerSession(authOptions);
     const id = req.nextUrl.searchParams.get('id');
     if (id) {
-        const post = await Post.findById(id).populate('author');
+        const post = await Post.findById(id)
+        .populate('author')
+        .populate({
+           path: 'parent', 
+        });
         return NextResponse.json(post);
     } else {
         const parent = req.nextUrl.searchParams.get("parent") || null;
         const author = req.nextUrl.searchParams.get("author");
-        const searchFilter = author ? {author} : {parent};
+        let searchFilter;
+        if (!author && !parent) {
+            const myFollows = await Follower.find({source:session.user.id}).exec();
+            const idsOfPeopleIFollow = myFollows.map(f => f.destination);
+            searchFilter = {author:[...idsOfPeopleIFollow,session.user.id]}
+        }
+        if (author) {
+            searchFilter = {author};
+        }
+        if (parent) {
+            searchFilter = {parent};
+        }
         const posts = await Post.find(searchFilter)
         .populate('author') // to retrieve image and nickname for user
         .sort({createdAt: -1}) // to sort in descending order

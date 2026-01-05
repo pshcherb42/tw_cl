@@ -42,6 +42,11 @@ export default function PostPage() {
             {!!post?._id && (
                 <div className="px-5 py-2">
                   <TopNavLink/>
+                  {post.parent && (
+                    <div>
+                      parent
+                    </div>
+                  )}
                   <PostContent {...post} big />
                   
                 </div>  
