@@ -40,11 +40,11 @@ export default function Home() {
     return <UsernameFrom />;
   }
 
-  if (!userInfo) {
-    console.log({session});
+  useEffect(() => {
+  if ((userInfoStatus as any) !== 'loading' && !userInfo) {
     router.push('/login');
-    return 'no user info';
   }
+}, [userInfo, userInfoStatus, router]);
 
   return (
     <Layout>
