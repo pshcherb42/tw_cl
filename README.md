@@ -1,3 +1,27 @@
+# Twitter Clone (Next.js)
+
+A full-stack Twitter-like social network built with Next.js.
+
+## Features
+- Authentication (NextAuth)
+- User profiles
+- Create posts & replies
+- Like posts
+- Home feed
+- Protected routes
+
+## Tech Stack
+- Next.js (App Router)
+- TypeScript
+- NextAuth
+- MongoDB
+- Tailwind CSS
+
+## Notes
+Built as a personal learning project.
+
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
