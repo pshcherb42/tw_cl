@@ -9,23 +9,21 @@ import axios from "axios";
 import Layout from "@/components/Layout"
 import { useRouter } from "next/navigation";
 export default function Home() {
-
-  const {data:session} = useSession();
-  const {userInfo,setUserInfo, status:userInfoStatus} = useUserInfo();
-  const [posts,setPosts] = useState<any[]>([]);
-  const [idsLikedByMe,setIdsLikedByMe] = useState<any[]>([]);
+  const { data: session } = useSession();
+  const { userInfo, setUserInfo, status: userInfoStatus } = useUserInfo();
+  const [posts, setPosts] = useState<any[]>([]);
+  const [idsLikedByMe, setIdsLikedByMe] = useState<any[]>([]);
   const router = useRouter();
-  
 
+  // ✅ Wrap redirect in useEffect, but add a guard
   useEffect(() => {
-    if ((userInfoStatus as any) !== 'loading' && !userInfo) {
+    if (userInfoStatus !== 1 && !userInfo) {
       router.push('/login');
     }
-  }, [userInfo, userInfoStatus, router]);
-
+  }, [userInfo, userInfoStatus, router]); // ❌ Empty array - only runs ONCE on mount
 
   useEffect(() => {
-      fetchHomePosts();
+    fetchHomePosts();
   }, []);
 
   function fetchHomePosts() {
@@ -37,18 +35,20 @@ export default function Home() {
 
   async function logout() {
     setUserInfo(null);
-    await signOut(); // ✅ Properly sign out
+    await signOut();
   }
 
-
-  if ((userInfoStatus as any) === 'loading') {
-    return 'loading user info';
+  if (userInfoStatus === 0) { // or whatever number means loading
+    return <div>Loading user info</div>;
   }
 
   if (userInfo && !(userInfo as any)?.username) {
     return <UsernameFrom />;
   }
 
+  if (!userInfo) {
+    return null; // Don't show anything while redirecting
+  }
 
   return (
     <Layout>

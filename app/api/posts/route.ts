@@ -32,6 +32,15 @@ export async function GET(req: NextRequest) {
     await initMongoose();
     const session = await getServerSession(authOptions);
     const id = req.nextUrl.searchParams.get('id');
+
+    if (!session) {
+    return NextResponse.json(
+        { posts: [], idsLikedByMe: [] },
+        { status: 200 }
+    );
+    } // for 500 error on logout
+
+
     if (id) {
         const post = await Post.findById(id)
         .populate('author')
