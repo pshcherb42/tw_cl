@@ -1,11 +1,23 @@
 "use client"
 
+import { useEffect, useState } from "react";
 import {getProviders, signIn, useSession} from "next-auth/react";
 import {useRouter} from "next/navigation";
 
-export default function LoginPage({providers}) {
+export default function LoginPage() {
+  const [providers, setProviders] = useState<any>(null);
   const {data,status} = useSession();
   const router = useRouter();
+
+
+  useEffect(() => {
+    const fetchProviders = async () => {
+      const res = await getProviders();
+      setProviders(res);
+    };
+    fetchProviders();
+  }, []);
+
   if (status === 'loading') {
     return '';
   }
@@ -14,7 +26,7 @@ export default function LoginPage({providers}) {
   }
   return (
     <div className="flex items-center justify-center h-screen">
-      {Object.values(providers).map(provider => (
+      {Object.values(providers).map((provider: any) => (
         <div key={provider.id}>
           <button onClick={async () => {await signIn(provider.id)}} className="bg-twitterWhite pl-3 pr-5 py-2 text-black rounded-full flex items-center">
             <img src="/google.png" alt="" className="h-8"/>
@@ -26,11 +38,11 @@ export default function LoginPage({providers}) {
   );
 }
 
-export async function getServerSideProps() {
+/*export async function getServerSideProps() {
   const providers = await getProviders();
   return {
     props: {providers},
   }
-}
+}*/
 
 
