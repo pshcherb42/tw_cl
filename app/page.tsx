@@ -15,8 +15,8 @@ export default function Home() {
 
   const {data:session} = useSession();
   const {userInfo,setUserInfo,status:userInfoStatus} = useUserInfo();
-  const [posts,setPosts] = useState([]);
-  const [idsLikedByMe,setIdsLikedByMe] = useState([]);
+  const [posts,setPosts] = useState<any[]>([]);
+  const [idsLikedByMe,setIdsLikedByMe] = useState<any[]>([]);
   const router = useRouter();
 
   function fetchHomePosts() {
@@ -54,7 +54,7 @@ export default function Home() {
       <h1 className="text-lg font-bold p-4">Home</h1>
       <PostForm onPost={() => {fetchHomePosts();}}
                 compact = {false}
-                parent />
+                parent = {null}/>
       <div className="">
         {posts.length > 0 && posts.map(post => (
           <div className="border-t border-twitter-border p-5" key={post._id}>
