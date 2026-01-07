@@ -26,7 +26,7 @@ export default function LoginPage() {
   }
   return (
     <div className="flex items-center justify-center h-screen">
-      {Object.values(providers).map((provider: any) => (
+      {providers && Object.values(providers).map((provider: any) => (
         <div key={provider.id}>
           <button onClick={async () => {await signIn(provider.id)}} className="bg-twitter-white pl-3 pr-5 py-2 text-black rounded-full flex items-center">
             <img src="/google.png" alt="" className="h-8"/>
