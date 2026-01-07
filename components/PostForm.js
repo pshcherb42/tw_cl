@@ -6,7 +6,11 @@ import Upload from "@/components/Upload"
 import { PulseLoader } from "react-spinners";
 
 
-export default function PostForm({onPost, compact,parent,placeholder='What\'s happening?'}) { // added onPost property for page to reload on post
+export default function PostForm({
+  onPost, 
+  compact = false,
+  parent = null,
+  placeholder='What\'s happening?'}) { // added onPost property for page to reload on post
     const {userInfo, status} = useUserInfo();
     const [text, setText] = useState('');
     const [images,setImages] = useState([]);
