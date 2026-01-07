@@ -1,30 +1,22 @@
 "use client"
-import useUserInfo from "@/hooks/useUserInfo";
-import UsernameFrom from "@/components/UsernameForm";
-import { signOut, useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
-import PostForm from "@/components/PostForm";
-import PostContent from "@/components/PostContent";
+
+import {signOut, useSession} from "next-auth/react";
+import {useEffect, useState} from "react";
+import UsernameForm from "../components/UsernameForm";
+import useUserInfo from "../hooks/useUserInfo";
+import PostForm from "../components/PostForm";
 import axios from "axios";
-import Layout from "@/components/Layout"
-import { useRouter } from "next/navigation";
+import PostContent from "../components/PostContent";
+import Layout from "../components/Layout";
+import {useRouter} from "next/navigation";
+
 export default function Home() {
-  const { data: session } = useSession();
-  const { userInfo, setUserInfo, status: userInfoStatus } = useUserInfo();
-  const [posts, setPosts] = useState<any[]>([]);
-  const [idsLikedByMe, setIdsLikedByMe] = useState<any[]>([]);
+
+  const {data:session} = useSession();
+  const {userInfo,setUserInfo,status:userInfoStatus} = useUserInfo();
+  const [posts,setPosts] = useState([]);
+  const [idsLikedByMe,setIdsLikedByMe] = useState([]);
   const router = useRouter();
-
-  // ✅ Wrap redirect in useEffect, but add a guard
-  useEffect(() => {
-    if (userInfoStatus !== 1 && !userInfo) {
-      router.push('/login');
-    }
-  }, [userInfo, userInfoStatus, router]); // ❌ Empty array - only runs ONCE on mount
-
-  useEffect(() => {
-    fetchHomePosts();
-  }, []);
 
   function fetchHomePosts() {
     axios.get('/api/posts').then(response => {
@@ -38,44 +30,48 @@ export default function Home() {
     await signOut();
   }
 
-  if (userInfoStatus === 0) { // or whatever number means loading
-    return <div>Loading user info</div>;
+  useEffect(() => {
+    fetchHomePosts();
+  }, []);
+
+  if (userInfoStatus === 1) {
+    return 'loading user info';
   }
 
   if (userInfo && !(userInfo as any)?.username) {
-    return <UsernameFrom />;
+    return <UsernameForm />;
   }
 
   if (!userInfo) {
-    return null; // Don't show anything while redirecting
+    console.log({session});
+    router.push('/login');
+    return 'no user info';
   }
 
   return (
     <Layout>
       <h1 className="text-lg font-bold p-4">Home</h1>
-        <PostForm onPost={() => fetchHomePosts()} compact={false} parent={null} />
-        <div className=""> 
-          {posts.length > 0 && posts.map((post:any) => ( 
-            <div key={post._id} className="border-t border-twitter-border p-5">
-              {post.parent && (
-                <div>
-                  <PostContent {...post.parent} />
-                  <div className="relative h-8">
-                    <div className="border-l-2 border-twitter-border h-10 absolute ml-6 -top-4"></div>
-                  </div>
+      <PostForm onPost={() => {fetchHomePosts();}} />
+      <div className="">
+        {posts.length > 0 && posts.map(post => (
+          <div className="border-t border-twitterBorder p-5" key={post._id}>
+            {post.parent && (
+              <div>
+                <PostContent {...post.parent} />
+                <div className="relative h-8">
+                  <div className="border-l-2 border-twitterBorder h-10 absolute ml-6 -top-4"></div>
                 </div>
-              )}
-              <PostContent {...post} likedByMe={idsLikedByMe.includes(post._id)}/> 
-            </div>
-          ))}
-        </div>
-        {userInfo && (
-          <div className="p-5 text-center border-t border-twitter-border">
-            <button onClick={logout} className="bg-twitter-white text-black px-5 py-2 rounded-full">
-              Logout
-            </button>
+              </div>
+            )}
+            <PostContent {...post} likedByMe={idsLikedByMe.includes(post._id)} />
           </div>
-        )}
+        ))}
+      </div>
+      {userInfo && (
+        <div className="p-5 text-center border-t border-twitterBorder">
+          <button onClick={logout} className="bg-twitterWhite text-black px-5 py-2 rounded-full">Logout</button>
+        </div>
+      )}
     </Layout>
   )
 }
