@@ -9,6 +9,7 @@ import axios from "axios";
 import PostContent from "../components/PostContent";
 import Layout from "../components/Layout";
 import {useRouter} from "next/navigation";
+import { Anybody } from "next/font/google";
 
 export default function Home() {
 
@@ -51,15 +52,17 @@ export default function Home() {
   return (
     <Layout>
       <h1 className="text-lg font-bold p-4">Home</h1>
-      <PostForm onPost={() => {fetchHomePosts();}} />
+      <PostForm onPost={() => {fetchHomePosts();}}
+                compact = {false}
+                parent />
       <div className="">
         {posts.length > 0 && posts.map(post => (
-          <div className="border-t border-twitterBorder p-5" key={post._id}>
+          <div className="border-t border-twitter-border p-5" key={post._id}>
             {post.parent && (
               <div>
                 <PostContent {...post.parent} />
                 <div className="relative h-8">
-                  <div className="border-l-2 border-twitterBorder h-10 absolute ml-6 -top-4"></div>
+                  <div className="border-l-2 border-twitter-border h-10 absolute ml-6 -top-4"></div>
                 </div>
               </div>
             )}
@@ -68,8 +71,8 @@ export default function Home() {
         ))}
       </div>
       {userInfo && (
-        <div className="p-5 text-center border-t border-twitterBorder">
-          <button onClick={logout} className="bg-twitterWhite text-black px-5 py-2 rounded-full">Logout</button>
+        <div className="p-5 text-center border-t border-twitter-border">
+          <button onClick={logout} className="bg-twitter-white text-black px-5 py-2 rounded-full">Logout</button>
         </div>
       )}
     </Layout>
